@@ -13,7 +13,7 @@ object ModelTypeUtils {
     }
 
     fun isMultiModalModel(modelName: String): Boolean {
-        return isAudioModel(modelName) || isVisualModel(modelName) || isDiffusionModel(modelName) || isOmni(modelName)
+        return isAudioModel(modelName) || isVisualModel(modelName) || isDiffusionModel(modelName) || isOmni(modelName) || isOcrModel(modelName)
     }
 
     fun isQnnModel(modelId: String): Boolean {
@@ -37,13 +37,21 @@ object ModelTypeUtils {
         return modelName.lowercase(Locale.getDefault()).contains("sana")
     }
 
+    /**
+     * Check if the model is a PP-OCR text-detection + recognition model.
+     */
+    fun isOcrModel(modelName: String): Boolean {
+        val lower = modelName.lowercase(Locale.getDefault())
+        return lower.contains("pp-ocr") || lower.contains("ppocr")
+    }
+
     fun requiresFaceImageInput(modelName: String): Boolean {
         return isSanaModel(modelName)
     }
 
     fun isVisualModel(modelId: String): Boolean {
         return modelId.lowercase(Locale.getDefault()).contains("vl") || isOmni(modelId) ||
-                ModelListManager.isVisualModel(modelId) || isSanaModel(modelId)
+                ModelListManager.isVisualModel(modelId) || isSanaModel(modelId) || isOcrModel(modelId)
     }
 
     fun isVideoModel(modelId: String): Boolean {

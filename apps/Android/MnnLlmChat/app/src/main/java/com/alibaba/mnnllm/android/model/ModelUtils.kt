@@ -205,8 +205,8 @@ object ModelUtils {
     }
 
     fun getConfigPathForModel(modelId: String): String? {
-        return if (ModelTypeUtils.isDiffusionModel(modelId)) {
-            // For diffusion models, check if it's a local model first
+        return if (ModelTypeUtils.isDiffusionModel(modelId) || ModelTypeUtils.isOcrModel(modelId)) {
+            // Diffusion and OCR models load from a directory (multiple files), not a config.json
             if (modelId.startsWith("local/")) {
                 ModelConfig.getDefaultConfigFile(modelId)
             } else {
@@ -225,7 +225,7 @@ object ModelUtils {
              modelId.substringAfterLast("/")
         } else ""
 
-        return if (ModelTypeUtils.isDiffusionModel(modelName)) {
+        return if (ModelTypeUtils.isDiffusionModel(modelName) || ModelTypeUtils.isOcrModel(modelName)) {
             if (modelItem.isBuiltin) {
                 ModelConfig.getDefaultConfigFile(modelId)
             } else if (modelItem.isLocal) {

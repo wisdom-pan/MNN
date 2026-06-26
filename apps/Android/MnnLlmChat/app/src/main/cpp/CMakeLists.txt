@@ -34,6 +34,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         diffusion_session.cpp
         sana_jni.cpp
         sana_session.cpp
+        ocr_jni.cpp
+        ocr_session.cpp
         # Video processing files (moved to video/ directory)
         video/video_decoder.cpp
         video/byte_buffer_decoder.cpp
@@ -61,6 +63,10 @@ include_directories("${MNN_SOURCE_ROOT}/include/")
 
 #diffusion
 include_directories("${MNN_SOURCE_ROOT}/transformers/diffusion/engine/include/")
+
+#ocr
+include_directories("${MNN_SOURCE_ROOT}/transformers/ocr/engine/include/")
+include_directories("${MNN_SOURCE_ROOT}/tools/cv/include/")
 
 #llm
 include_directories("${MNN_SOURCE_ROOT}/transformers/llm/engine/include")

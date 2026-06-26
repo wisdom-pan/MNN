@@ -1,5 +1,5 @@
 {
-    "version": "22",
+    "version": "23",
     "tagTranslations": {
         "Vision": "图像理解",
         "Video": "视频理解",
@@ -9,7 +9,8 @@
         "ImageGen": "文生图",
         "AudioGen": "音频生成",
         "Think": "深度思考",
-        "Chat": "对话"
+        "Chat": "对话",
+        "OCR": "文字识别"
     },
     "quickFilterTags": [
         "Think",
@@ -19,7 +20,8 @@
         "Audio",
         "AudioGen",
         "Code",
-        "Video"
+        "Video",
+        "OCR"
     ],
     "vendorOrder": [
         "Qwen",
@@ -41,7 +43,8 @@
         "01.AI",
         "Hunyuan",
         "MiniCPM",
-        "Lingshu"
+        "Lingshu",
+        "PaddleOCR"
     ],
     "models": [
         {
@@ -2767,6 +2770,57 @@
             "size_gb": 1.5,
             "vendor": "stability.ai",
             "file_size": 1154249052
+        },
+        {
+            "modelName": "PP-OCRv6-tiny-MNN",
+            "tags": [
+                "OCR"
+            ],
+            "categories": [
+                "ocr",
+                "paddleocr"
+            ],
+            "sources": {
+                "HuggingFace": "taobao-mnn/PP-OCRv6-tiny-MNN",
+                "ModelScope": "MNN/PP-OCRv6-tiny-MNN"
+            },
+            "size_gb": 0.003,
+            "vendor": "PaddleOCR",
+            "file_size": 3180668
+        },
+        {
+            "modelName": "PP-OCRv6-small-MNN",
+            "tags": [
+                "OCR"
+            ],
+            "categories": [
+                "ocr",
+                "paddleocr"
+            ],
+            "sources": {
+                "HuggingFace": "taobao-mnn/PP-OCRv6-small-MNN",
+                "ModelScope": "MNN/PP-OCRv6-small-MNN"
+            },
+            "size_gb": 0.015,
+            "vendor": "PaddleOCR",
+            "file_size": 15686931
+        },
+        {
+            "modelName": "PP-OCRv6-medium-MNN",
+            "tags": [
+                "OCR"
+            ],
+            "categories": [
+                "ocr",
+                "paddleocr"
+            ],
+            "sources": {
+                "HuggingFace": "taobao-mnn/PP-OCRv6-medium-MNN",
+                "ModelScope": "MNN/PP-OCRv6-medium-MNN"
+            },
+            "size_gb": 0.066,
+            "vendor": "PaddleOCR",
+            "file_size": 69535771
         }
     ],
     "tts_models": [

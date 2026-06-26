@@ -25,6 +25,7 @@
     <string name="loading_failed_click_tor_retry">載入失敗: %1$s，點擊重試</string>
     <string name="input_messages">輸入訊息</string>
     <string name="input_face_image_hint">請輸入人臉圖片</string>
+    <string name="input_ocr_image_hint">選擇圖片以辨識文字</string>
     <string name="send">傳送</string>
     <string name="raise_issue">回報問題 (Issue)</string>
     <string name="star_project">在 GitHub 上加星號 (Star)</string>

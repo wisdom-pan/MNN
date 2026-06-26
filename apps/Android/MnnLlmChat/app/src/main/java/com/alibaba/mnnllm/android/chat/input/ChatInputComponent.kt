@@ -198,7 +198,9 @@ class ChatInputComponent(
     }
 
     private fun updateInputHint() {
-        val hintRes = if (ModelTypeUtils.requiresFaceImageInput(currentModelId)) {
+        val hintRes = if (ModelTypeUtils.isOcrModel(currentModelId)) {
+            R.string.input_ocr_image_hint
+        } else if (ModelTypeUtils.requiresFaceImageInput(currentModelId)) {
             R.string.input_face_image_hint
         } else {
             R.string.input_messages
@@ -212,7 +214,8 @@ class ChatInputComponent(
             isGenerating = chatActivity.isGenerating,
             hasAttachment = currentUserMessage != null,
             inputText = editUserMessage.text.toString(),
-            requiresFaceImage = ModelTypeUtils.requiresFaceImageInput(currentModelId)
+            requiresFaceImage = ModelTypeUtils.requiresFaceImageInput(currentModelId) ||
+                ModelTypeUtils.isOcrModel(currentModelId)
         )
         buttonSend.isEnabled = enabled
         buttonSend.setImageResource(if (!chatActivity.isGenerating) R.drawable.button_send else R.drawable.ic_stop)

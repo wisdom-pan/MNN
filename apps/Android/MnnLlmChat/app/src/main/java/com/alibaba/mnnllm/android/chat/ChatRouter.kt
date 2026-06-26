@@ -127,10 +127,11 @@ object ChatRouter {
 
     fun startRun(context: Context, modelIdParam: String, destModelDir:String?, sessionId: String?) {
         Log.d(TAG, "startRun modelIdParam: $modelIdParam destModelDir: $destModelDir sessionId: $sessionId")
-        val isDiffusion = ModelTypeUtils.isDiffusionModel(modelIdParam)
+        // Diffusion and OCR models both load from a directory rather than a config.json file.
+        val isDirBased = ModelTypeUtils.isDiffusionModel(modelIdParam) || ModelTypeUtils.isOcrModel(modelIdParam)
         var modelId:String? = modelIdParam
         val downloadManager = ModelDownloadManager.getInstance(context)
-        if (!modelIdParam.startsWith("local") && !modelIdParam.startsWith("Builtin") && !modelIdParam.contains("/") && !isDiffusion) {
+        if (!modelIdParam.startsWith("local") && !modelIdParam.startsWith("Builtin") && !modelIdParam.contains("/") && !isDirBased) {
             modelId = ModelUtils.getValidModelIdFromName(downloadManager, modelIdParam)
         }
         Log.d(TAG, "modelId: $modelId")
@@ -139,21 +140,21 @@ object ChatRouter {
             return
         }
         CrashReportContext.setCurrentModel(modelId, sessionId)
-        
+
         // Check if this is a QNN model and handle QNN library download
         if (ModelTypeUtils.isQnnModel(modelId)) {
             Log.d(TAG, "QNN model detected: $modelId")
             if (QnnModule.deviceSupported()) {
-                checkAndDownloadQnnLibs(context, modelId, destModelDir, sessionId, isDiffusion)
+                checkAndDownloadQnnLibs(context, modelId, destModelDir, sessionId, isDirBased)
             } else {
                 Log.w(TAG, "QNN model detected but device does not support QNN acceleration")
                 Toast.makeText(context, context.getString(R.string.qnn_device_not_supported), Toast.LENGTH_LONG).show()
             }
             return
         }
-        
+
         // Continue with normal flow for non-QNN models
-        proceedToStartChat(context, modelId, destModelDir, sessionId, isDiffusion)
+        proceedToStartChat(context, modelId, destModelDir, sessionId, isDirBased)
     }
     
     private fun checkAndDownloadQnnLibs(context: Context, modelId: String, destModelDir: String?, sessionId: String?, isDiffusion: Boolean) {
@@ -287,7 +288,7 @@ object ChatRouter {
         }
     }
     
-    private fun proceedToStartChat(context: Context, modelId: String, destModelDir: String?, sessionId: String?, isDiffusion: Boolean) {
+    private fun proceedToStartChat(context: Context, modelId: String, destModelDir: String?, sessionId: String?, isDirBased: Boolean) {
         val downloadManager = ModelDownloadManager.getInstance(context)
         if (isStopDownloadOnChatEnabled(context)) {
             downloadManager.pauseAllDownloads()
@@ -302,14 +303,14 @@ object ChatRouter {
             ).show()
             return
         }
-        Log.d(TAG, "isDiffusion: ${isDiffusion}, configFilePath: $configFilePath")
+        Log.d(TAG, "isDirBased: ${isDirBased}, configFilePath: $configFilePath")
         val intent = Intent(context, ChatActivity::class.java)
         intent.putExtra("chatSessionId", sessionId)
-        if (isDiffusion) {
-            // For diffusion models, pass the directory path, not the config file path
-            val diffusionDir = resolveDiffusionDir(configFilePath)
-            Log.d(TAG, "diffusionDir: $diffusionDir")
-            intent.putExtra("diffusionDir", diffusionDir)
+        if (isDirBased) {
+            // For diffusion and OCR models, pass the directory path, not a config file path
+            val modelDir = resolveDiffusionDir(configFilePath)
+            Log.d(TAG, "modelDir: $modelDir")
+            intent.putExtra("diffusionDir", modelDir)
         } else {
             intent.putExtra("configFilePath", configFilePath)
         }

@@ -103,15 +103,16 @@ class ChatPresenter(
             Log.d(TAG, "createSession: no sessionId provided, starting new session")
         }
         
-        val configPath = if (ModelTypeUtils.isDiffusionModel(modelName)) {
+        val isDirBased = ModelTypeUtils.isDiffusionModel(modelName) || ModelTypeUtils.isOcrModel(modelName)
+        val configPath = if (isDirBased) {
             intent.getStringExtra("diffusionDir")
         } else {
             intent.getStringExtra("configFilePath")
         }
-        
-        Log.d(TAG, "createSession: isDiffusion=${ModelTypeUtils.isDiffusionModel(modelName)}, modelName=$modelName, configPath=$configPath")
-        
-        if (ModelTypeUtils.isDiffusionModel(modelName) || ModelTypeUtils.isSanaModel(modelName)) {
+
+        Log.d(TAG, "createSession: isDirBased=$isDirBased, modelName=$modelName, configPath=$configPath")
+
+        if (ModelTypeUtils.isDiffusionModel(modelName) || ModelTypeUtils.isSanaModel(modelName) || ModelTypeUtils.isOcrModel(modelName)) {
             val chatService = ChatService.provide()
             chatSession = chatService.createSession(
                 modelId, modelName, sessionId, chatDataItemList, configPath, false
@@ -230,6 +231,30 @@ class ChatPresenter(
         )
     }
 
+    private fun submitOcrRequest(userData: ChatDataItem): HashMap<String, Any> {
+        val imageInputPath = userData.imageUris?.firstOrNull()?.let {
+            FileUtils.getPathForUri(it)
+        } ?: ""
+        val generateResultProcessor = GenerateResultProcessor()
+        generateResultProcessor.generateBegin()
+        val result = chatSession.generate(
+            "",
+            mapOf("imageInput" to imageInputPath),
+            object : GenerateProgressListener {
+                override fun onProgress(progress: String?): Boolean {
+                    generateResultProcessor.process(progress)
+                    chatActivity.lifecycleScope.launch {
+                        this@ChatPresenter.generateListener?.onLlmGenerateProgress(progress, generateResultProcessor)
+                        additionalListeners.forEach { it.onLlmGenerateProgress(progress, generateResultProcessor) }
+                    }
+                    return false
+                }
+            }
+        )
+        result["response"] = generateResultProcessor.getRawResult()
+        return result
+    }
+
     private fun submitLlmRequest(prompt:String): HashMap<String, Any> {
         val generateResultProcessor =
             GenerateResultProcessor()
@@ -254,7 +279,9 @@ class ChatPresenter(
     private fun submitRequest(input: String, userData: ChatDataItem): HashMap<String, Any> {
         stopGenerating = false
         val benchMarkResult = try {
-            if (ModelTypeUtils.isDiffusionModel(this.modelName)) {
+            if (ModelTypeUtils.isOcrModel(this.modelName)) {
+                submitOcrRequest(userData)
+            } else if (ModelTypeUtils.isDiffusionModel(this.modelName)) {
                 submitDiffusionRequest(input, userData)
             } else {
                 submitLlmRequest(input)

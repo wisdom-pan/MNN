@@ -26,6 +26,7 @@
     <string name="loading_failed_click_tor_retry">Loading failed: %1$s, click to retry</string>
     <string name="input_messages">Input messages here</string>
     <string name="input_face_image_hint">Please upload a face image</string>
+    <string name="input_ocr_image_hint">Pick an image to recognize text</string>
     <string name="send">send</string>
     <string name="raise_issue">Report an issue</string>
     <string name="star_project">Star in Github </string>

@@ -12,6 +12,7 @@ object Modality {
     const val Audio = "Audio"
     const val Omni = "Omni"
     const val Diffusion = "Diffusion"
+    const val Ocr = "Ocr"
 
     fun checkModality(modelId: String, modality:String): Boolean {
         if (modality == Text) {
@@ -24,9 +25,11 @@ object Modality {
             return ModelTypeUtils.isOmni(modelId)
         } else if (modality == Diffusion) {
             return ModelTypeUtils.isDiffusionModel(modelId)
+        } else if (modality == Ocr) {
+            return ModelTypeUtils.isOcrModel(modelId)
         }
         return false
     }
 
-    val modalitySelectorList = listOf(Visual, Audio, Omni, Diffusion)
+    val modalitySelectorList = listOf(Visual, Audio, Omni, Diffusion, Ocr)
 }

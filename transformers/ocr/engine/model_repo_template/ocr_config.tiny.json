@@ -1,0 +1,10 @@
+{
+    "det_model": "PP-OCRv6_tiny_det.mnn",
+    "rec_model": "PP-OCRv6_tiny_rec.mnn",
+    "keys": "ppocr_keys_v6_tiny.txt",
+    "det_limit_side_len": 960,
+    "det_db_thresh": 0.3,
+    "det_db_box_thresh": 0.5,
+    "det_db_unclip_ratio": 1.5,
+    "rec_img_height": 48
+}

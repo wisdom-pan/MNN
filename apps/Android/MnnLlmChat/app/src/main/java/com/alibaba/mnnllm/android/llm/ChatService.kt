@@ -36,7 +36,9 @@ class ChatService {
             sessionIdParam!!
         }
         
-        val session = if (ModelTypeUtils.isSanaModel(modelName)) {
+        val session = if (ModelTypeUtils.isOcrModel(modelName)) {
+            OcrSession(modelId, sessionId, configPath!!, historyList)
+        } else if (ModelTypeUtils.isSanaModel(modelName)) {
             SanaSession(modelId, sessionId, configPath!!, historyList)
         } else if (ModelTypeUtils.isDiffusionModel(modelName)) {
             DiffusionSession(modelId, sessionId, configPath!!, historyList)
@@ -45,7 +47,7 @@ class ChatService {
             llmSession.supportOmni = ModelTypeUtils.isOmni(modelName)
             llmSession
         }
-        
+
         // Store in appropriate map
         if (session is LlmSession) {
             transformerSessionMap[sessionId] = session
